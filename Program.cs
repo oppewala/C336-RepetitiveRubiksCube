@@ -8,8 +8,6 @@ namespace C336_RepetitiveRubiksCube
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
             Cube initialCube = new Cube();
             Cube cube = new Cube();
 
@@ -29,12 +27,15 @@ namespace C336_RepetitiveRubiksCube
     {
         public Cube()
         {
-            Upper = new Face(Colours.Yellow);
-            Bottom = new Face(Colours.Blue);
-            Left = new Face(Colours.Green);
-            Right = new Face(Colours.White);
-            Front = new Face(Colours.Orange);
-            Back = new Face(Colours.Red);
+            // Needs to pass in reference to the specific set of sqaures of each side
+            // since the orientation of the side will determine which row/column to use
+            // when rotating.
+            Upper = new Face(Colours.Yellow, Back, Front, Left, Right);
+            Bottom = new Face(Colours.Blue, Front, Back, Left, Right);
+            Left = new Face(Colours.Green, Upper, Bottom, Back, Front);
+            Right = new Face(Colours.White, Upper, Bottom, Front, Back);
+            Front = new Face(Colours.Orange, Upper, Bottom, Left, Right);
+            Back = new Face(Colours.Red, Upper, Bottom, Right, Left);
         }
 
         public Face Upper { get; set; }
@@ -83,7 +84,7 @@ namespace C336_RepetitiveRubiksCube
     [Serializable]
     public class Face
     {
-        public Face(Colours colour)
+        public Face(Colours colour, Face above, Face below, Face left, Face right)
         {
             Positions = new Colours[3, 3] {
                 {colour, colour, colour}, 
@@ -93,6 +94,10 @@ namespace C336_RepetitiveRubiksCube
         }
 
         public Colours[,] Positions { get; set; }
+        private Face Above { get; }
+        private Face Below { get; }
+        private Face Left { get; }
+        private Face Right { get; }
 
         public Colours[] GetRow(int row)
         {
