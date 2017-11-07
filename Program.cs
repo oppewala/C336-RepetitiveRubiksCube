@@ -30,12 +30,13 @@ namespace C336_RepetitiveRubiksCube
             // Needs to pass in reference to the specific set of sqaures of each side
             // since the orientation of the side will determine which row/column to use
             // when rotating.
-            Upper = new Face(Colours.Yellow, Back, Front, Left, Right);
-            Bottom = new Face(Colours.Blue, Front, Back, Left, Right);
-            Left = new Face(Colours.Green, Upper, Bottom, Back, Front);
-            Right = new Face(Colours.White, Upper, Bottom, Front, Back);
-            Front = new Face(Colours.Orange, Upper, Bottom, Left, Right);
-            Back = new Face(Colours.Red, Upper, Bottom, Right, Left);
+            // Also needs to pass in the order the squares should be in...
+            Upper = new Face(Colours.Yellow, Back.GetRow(0), Front.GetRow(0), Left.GetRow(0), Right.GetRow(0));
+            Bottom = new Face(Colours.Blue, Front.GetRow(2), Back.GetRow(2), Left.GetRow(2), Right.GetRow(2));
+            Left = new Face(Colours.Green, Upper.GetColumn(0), Bottom.GetColumn(0), Back.GetColumn(2), Front.GetColumn(0));
+            Right = new Face(Colours.White, Upper.GetColumn(2), Bottom.GetColumn(2), Front.GetColumn(2), Back.GetColumn(0));
+            Front = new Face(Colours.Orange, Upper.GetRow(2), Bottom.GetRow(0), Left.GetColumn(2), Right.GetColumn(0));
+            Back = new Face(Colours.Red, Upper.GetRow(0), Bottom.GetRow(2), Right.GetColumn(2), Left.GetColumn(0));
         }
 
         public Face Upper { get; set; }
@@ -84,20 +85,24 @@ namespace C336_RepetitiveRubiksCube
     [Serializable]
     public class Face
     {
-        public Face(Colours colour, Face above, Face below, Face left, Face right)
+        public Face(Colours colour, Colours[] above, Colours[] below, Colours[] left, Colours[] right)
         {
             Positions = new Colours[3, 3] {
                 {colour, colour, colour}, 
                 {colour, colour, colour},
                 {colour, colour, colour}
             };
+            Above = above;
+            Below = below;
+            Left = left;
+            Right = right;
         }
 
         public Colours[,] Positions { get; set; }
-        private Face Above { get; }
-        private Face Below { get; }
-        private Face Left { get; }
-        private Face Right { get; }
+        private Colours[] Above { get; }
+        private Colours[] Below { get; }
+        private Colours[] Left { get; }
+        private Colours[] Right { get; }
 
         public Colours[] GetRow(int row)
         {
